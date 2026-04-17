@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期刊匹配 | SCI WritingLab · 有译思</title>
+<meta name="description" content="输入研究方向与稿件信息，快速获得候选SCI期刊匹配建议。免费工具，由有译思翻译Transyes出品。">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700;800&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#faf9f7;--bg2:#f3f1ed;--fg:#1a1a1a;--t2:#555;--t3:#888;--bd:#e5e2dc;--a:#b45309;--a2:#d97706;--h:#78350f;--card:#fff}
+body{min-height:100vh;background:var(--bg);color:var(--fg);font-family:'Source Serif 4','Noto Serif SC',Georgia,serif;line-height:1.7}
+header{border-bottom:1px solid var(--bd);padding:14px 24px;background:var(--card)}
+.hdr-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:22px;font-weight:800;color:var(--h);letter-spacing:-1px;text-decoration:none}
+.logo small{font-size:11px;color:var(--t3);font-family:sans-serif;font-weight:400;margin-left:8px}
+nav{display:flex;gap:4px}
+.nav-btn{display:inline-block;background:transparent;border:1px solid transparent;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;color:var(--t2);font-family:sans-serif;text-decoration:none;transition:all .15s}
+.nav-btn:hover{color:var(--h)}
+.nav-btn.active{background:var(--bg2);border-color:var(--bd);color:var(--h);font-weight:700}
+main{max-width:900px;margin:0 auto;padding:24px 20px}
+h2{font-size:21px;font-weight:800;color:var(--h);margin-bottom:4px}
+h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--h)}
+.desc{font-size:13px;color:var(--t3);margin-bottom:18px;font-family:sans-serif}
+.row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+input[type=text],textarea,select{width:100%;padding:11px 15px;border:1px solid var(--bd);border-radius:8px;font-size:14px;font-family:sans-serif;outline:none;background:var(--card);transition:border .15s;color:var(--fg)}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--a)}
+textarea{font-family:'Source Serif 4',Georgia,serif;font-size:13.5px;line-height:1.7;resize:vertical}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.btn{padding:11px 24px;background:var(--a);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:sans-serif;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
+.btn:hover{background:var(--a2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{padding:5px 12px;border-radius:5px;font-size:12px;border:1px solid var(--bd);background:var(--card);color:var(--t2);cursor:pointer;font-family:sans-serif;transition:all .15s}
+.btn-sm:hover{border-color:var(--a);color:var(--a)}
+/* 章节标题 */
+.section-label{font-family:sans-serif;font-size:13px;font-weight:700;color:var(--h);margin-bottom:6px;display:block}
+/* 高级设置折叠区 */
+details.advanced{background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:18px;overflow:hidden}
+details.advanced summary{padding:13px 18px;cursor:pointer;font-family:sans-serif;font-size:13px;font-weight:700;color:var(--h);list-style:none;display:flex;justify-content:space-between;align-items:center;user-select:none}
+details.advanced summary::-webkit-details-marker{display:none}
+details.advanced summary::after{content:"▸";font-size:14px;color:var(--t3);transition:transform .2s}
+details.advanced[open] summary::after{transform:rotate(90deg)}
+details.advanced summary:hover{background:var(--bg2)}
+.advanced-body{padding:16px 18px 18px;border-top:1px solid var(--bd)}
+/* 筛选项网格 */
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.filter-group{display:flex;flex-direction:column;gap:6px}
+.filter-group label.group-label{font-family:sans-serif;font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+/* 单选按钮组 */
+.radio-group{display:flex;gap:6px;flex-wrap:wrap}
+.radio-option{display:flex;align-items:center;gap:0}
+.radio-option input[type=radio]{display:none}
+.radio-option label{padding:5px 12px;border:1px solid var(--bd);border-radius:5px;font-size:12px;font-family:sans-serif;cursor:pointer;color:var(--t2);background:var(--bg);transition:all .15s;white-space:nowrap}
+.radio-option input[type=radio]:checked + label{background:var(--a);color:#fff;border-color:var(--a)}
+.radio-option label:hover{border-color:var(--a);color:var(--a)}
+/* 多选框组 */
+.check-group{display:flex;gap:6px;flex-wrap:wrap}
+.check-option{display:flex;align-items:center;gap:0}
+.check-option input[type=checkbox]{display:none}
+.check-option label{padding:5px 12px;border:1px solid var(--bd);border-radius:5px;font-size:12px;font-family:sans-serif;cursor:pointer;color:var(--t2);background:var(--bg);transition:all .15s;white-space:nowrap}
+.check-option input[type=checkbox]:checked + label{background:var(--a);color:#fff;border-color:var(--a)}
+.check-option label:hover{border-color:var(--a);color:var(--a)}
+/* 结果区 */
+.result{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:22px 26px;margin-top:12px;line-height:1.7;font-size:13.5px}
+.result h2{font-size:17px;margin:18px 0 8px;color:var(--h)}
+.result h3{font-size:14px;margin:14px 0 6px;color:var(--h)}
+.result table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
+.result th{text-align:left;padding:7px 10px;border-bottom:2px solid var(--bd);font-size:12px;color:var(--t2);background:var(--bg2)}
+.result td{padding:6px 10px;border-bottom:1px solid var(--bd);line-height:1.55}
+.result ul,.result ol{margin:6px 0 6px 20px}
+.result li{margin:3px 0;font-size:13px}
+.result hr{border:none;border-top:1px solid var(--bd);margin:14px 0}
+/* 错误与加载 */
+.err{padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b;font-size:13px;margin:12px 0;font-family:sans-serif}
+.loading{text-align:center;padding:32px;color:var(--t3);font-family:sans-serif;font-size:14px}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--bd);border-top-color:var(--a);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 期刊卡片 */
+.journal-card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px 22px;margin-top:12px}
+.journal-card-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.journal-name{font-size:16px;font-weight:700;color:var(--h)}
+.fit-badge{padding:3px 10px;background:var(--bg2);border:1px solid var(--bd);border-radius:999px;font-size:12px;font-family:sans-serif;color:var(--t2)}
+.journal-metrics{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;font-family:sans-serif;font-size:12px}
+.metric-tag{padding:3px 9px;background:var(--bg2);border-radius:4px;color:var(--t2)}
+.metric-tag.warn{background:#fef3c7;color:#92400e}
+.verify-flags{margin:8px 0;padding:8px 12px;background:#fef3c7;border:1px solid #f59e0b;border-radius:6px;font-size:12px;font-family:sans-serif;color:#92400e}
+details.card-detail summary{cursor:pointer;font-family:sans-serif;font-size:13px;font-weight:700;color:var(--a);margin-top:8px;list-style:none}
+details.card-detail summary::-webkit-details-marker{display:none}
+details.card-detail ul{margin:6px 0 0 16px;font-size:13px;font-family:sans-serif;color:var(--t2)}
+details.card-detail li{margin:3px 0}
+/* 免责声明 */
+.disclaimer{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px 18px;margin-top:18px;font-size:12px;font-family:sans-serif;color:var(--t3);line-height:1.7}
+.disclaimer ul{margin:6px 0 0 16px}
+.disclaimer li{margin:3px 0}
+/* 联系入口 */
+.cta-box{margin-top:44px;padding:22px 28px;background:var(--bg2);border-radius:12px;max-width:680px;margin-left:auto;margin-right:auto}
+.cta-box h3{margin:0 0 8px;font-family:sans-serif;font-size:15px;color:var(--h)}
+.cta-box p{font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.7}
+.contact-row{display:flex;gap:24px;align-items:flex-start;margin-top:14px;flex-wrap:wrap}
+.contact-info{font-family:sans-serif;font-size:13px;color:var(--fg)}
+.contact-info div{margin-bottom:6px}
+.contact-info a{color:var(--a);text-decoration:none}
+.contact-info a:hover{text-decoration:underline}
+.qr-img{width:90px;height:90px;border-radius:8px;border:1px solid var(--bd);object-fit:cover}
+.services{margin-top:10px;font-size:12px;color:var(--t3);font-family:sans-serif}
+footer{margin-top:44px;padding:22px 0;border-top:1px solid var(--bd);text-align:center;font-size:12px;color:var(--t3);font-family:sans-serif;line-height:1.8}
+@media(max-width:640px){
+  .hdr-inner{flex-direction:column;align-items:flex-start}
+  h2{font-size:18px}
+  .filter-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="hdr-inner">
+  <a class="logo" href="index.html">SCI WritingLab<small>by Transyes</small></a>
+</div>
+</header>
+
+<main>
+  <h2>🧭 期刊匹配</h2>
+  <p class="desc">填写稿件信息，用自然语言描述选刊偏好，快速获得 5 个候选期刊与匹配建议。</p>
+
+  <!-- ① 稿件基本信息 -->
+  <span class="section-label">稿件信息</span>
+  <div class="row">
+    <input type="text" id="matcher-title" placeholder="论文标题 Title（必填）">
+  </div>
+  <div class="row">
+    <textarea id="matcher-abstract" style="height:140px" placeholder="摘要 Abstract（必填，建议 80 词以上）&#10;&#10;粘贴英文摘要，包含研究背景、方法、主要结果与结论。"></textarea>
+  </div>
+  <div class="row">
+    <input type="text" id="matcher-keywords" placeholder="关键词 Keywords（英文逗号分隔，可选）：biomaterials, hydrogel, wound healing">
+  </div>
+
+  <!-- ② 自然语言偏好（主输入） -->
+  <span class="section-label" style="margin-top:6px">选刊偏好（自然语言描述）</span>
+  <div class="row">
+    <textarea id="matcher-natural" style="height:110px" placeholder="用自己的话描述选刊需求，例如：&#10;希望投稿到材料或化学方向的 Q1 期刊，影响因子 5 以上，审稿周期尽量短。预算有限，优先考虑非 OA 或低 APC 期刊。研究侧重临床应用，希望期刊有较高的临床读者覆盖率…"></textarea>
+  </div>
+
+  <!-- ③ 高级筛选条件（可折叠） -->
+  <details class="advanced" id="advanced-settings">
+    <summary>高级筛选条件（可选）</summary>
+    <div class="advanced-body">
+      <div class="filter-grid">
+
+        <!-- CAS 分区 -->
+        <div class="filter-group">
+          <label class="group-label">CAS 分区</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="casQ" id="casQ-any" value="" checked><label for="casQ-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="casQ" id="casQ-1" value="Q1"><label for="casQ-1">Q1</label></div>
+            <div class="radio-option"><input type="radio" name="casQ" id="casQ-12" value="Q1,Q2"><label for="casQ-12">Q1 或 Q2</label></div>
+            <div class="radio-option"><input type="radio" name="casQ" id="casQ-2" value="Q2"><label for="casQ-2">Q2</label></div>
+          </div>
+        </div>
+
+        <!-- JCR 分区 -->
+        <div class="filter-group">
+          <label class="group-label">JCR 分区</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="jcrQ" id="jcrQ-any" value="" checked><label for="jcrQ-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="jcrQ" id="jcrQ-1" value="Q1"><label for="jcrQ-1">Q1</label></div>
+            <div class="radio-option"><input type="radio" name="jcrQ" id="jcrQ-12" value="Q1,Q2"><label for="jcrQ-12">Q1 或 Q2</label></div>
+            <div class="radio-option"><input type="radio" name="jcrQ" id="jcrQ-2" value="Q2"><label for="jcrQ-2">Q2</label></div>
+          </div>
+        </div>
+
+        <!-- 影响因子下限 -->
+        <div class="filter-group">
+          <label class="group-label">最低 Impact Factor</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="ifMin" id="if-any" value="" checked><label for="if-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="ifMin" id="if-3" value="3"><label for="if-3">≥ 3</label></div>
+            <div class="radio-option"><input type="radio" name="ifMin" id="if-5" value="5"><label for="if-5">≥ 5</label></div>
+            <div class="radio-option"><input type="radio" name="ifMin" id="if-8" value="8"><label for="if-8">≥ 8</label></div>
+            <div class="radio-option"><input type="radio" name="ifMin" id="if-10" value="10"><label for="if-10">≥ 10</label></div>
+          </div>
+        </div>
+
+        <!-- 审稿周期 -->
+        <div class="filter-group">
+          <label class="group-label">审稿周期</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="reviewCycle" id="rv-any" value="" checked><label for="rv-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="reviewCycle" id="rv-2" value="2"><label for="rv-2">≤ 2 个月</label></div>
+            <div class="radio-option"><input type="radio" name="reviewCycle" id="rv-3" value="3"><label for="rv-3">≤ 3 个月</label></div>
+            <div class="radio-option"><input type="radio" name="reviewCycle" id="rv-6" value="6"><label for="rv-6">≤ 6 个月</label></div>
+          </div>
+        </div>
+
+        <!-- OA 偏好 -->
+        <div class="filter-group">
+          <label class="group-label">开放获取（OA）</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="oa" id="oa-any" value="" checked><label for="oa-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="oa" id="oa-prefer" value="prefer_oa"><label for="oa-prefer">优先 OA</label></div>
+            <div class="radio-option"><input type="radio" name="oa" id="oa-require" value="require_oa"><label for="oa-require">必须 OA</label></div>
+            <div class="radio-option"><input type="radio" name="oa" id="oa-no" value="no_preference"><label for="oa-no">非 OA 优先</label></div>
+          </div>
+        </div>
+
+        <!-- APC 上限 -->
+        <div class="filter-group">
+          <label class="group-label">APC 上限（USD）</label>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="apc" id="apc-any" value="" checked><label for="apc-any">不限</label></div>
+            <div class="radio-option"><input type="radio" name="apc" id="apc-1k" value="1000"><label for="apc-1k">≤ $1,000</label></div>
+            <div class="radio-option"><input type="radio" name="apc" id="apc-2k" value="2000"><label for="apc-2k">≤ $2,000</label></div>
+            <div class="radio-option"><input type="radio" name="apc" id="apc-3k" value="3000"><label for="apc-3k">≤ $3,000</label></div>
+            <div class="radio-option"><input type="radio" name="apc" id="apc-5k" value="5000"><label for="apc-5k">≤ $5,000</label></div>
+          </div>
+        </div>
+
+        <!-- CAS 学科分类 -->
+        <div class="filter-group">
+          <label class="group-label">CAS 学科分类（文本）</label>
+          <input type="text" id="mc-casText" placeholder="如：Chemistry, Materials Science" style="height:auto;padding:8px 12px;font-size:13px">
+        </div>
+
+        <!-- CAS Tags -->
+        <div class="filter-group">
+          <label class="group-label">CAS Tags（关键标签）</label>
+          <input type="text" id="mc-casTags" placeholder="如：nanomedicine, drug delivery, imaging" style="height:auto;padding:8px 12px;font-size:13px">
+        </div>
+
+      </div><!-- /filter-grid -->
+    </div><!-- /advanced-body -->
+  </details>
+
+  <!-- ④ 操作按钮 -->
+  <div class="row" style="margin-top:4px;align-items:center">
+    <button class="btn" id="btn-matcher" onclick="runMatcher(1)">推荐 5 个期刊</button>
+    <button class="btn-sm" type="button" onclick="resetMatcher()">清空重填</button>
+  </div>
+  <p class="desc" style="margin-top:-4px">
+    您的内容将通过 API 发送至大模型处理，不建议提交涉密或未发表核心内容。
+  </p>
+
+  <div id="matcher-error"></div>
+  <div id="matcher-loading" style="display:none"><div class="loading"><span class="spinner"></span><span id="matcher-tip">正在连接 AI 模型...</span></div></div>
+  <div id="matcher-result"></div>
+
+  <!-- 免责声明 -->
+  <div class="disclaimer">
+    <strong>免责声明</strong>
+    <ul>
+      <li>结果仅供选刊参考，不构成投稿保证。</li>
+      <li>中科院/JCR 分区、影响因子、OA/APC、审稿周期等可能随时间变化，请以期刊官网与最新官方数据库为准。</li>
+      <li>工具不提供接受率数值预测，fitScore 仅代表匹配度估算。</li>
+      <li>您输入的论文内容将通过 API 发送至第三方大模型处理。本平台不进行长期保存或对外披露原始内容（除为完成本次处理所需的必要传输）。建议勿提交涉密、未发表成果及敏感内容。</li>
+    </ul>
+  </div>
+
+  <!-- 有译思联系入口 -->
+  <div class="cta-box">
+    <h3>需要专业 SCI 论文润色服务？</h3>
+    <p>以上工具提供 AI 语言层面的快速预审。如需资深学术编辑的专业 SCI 论文润色——包括逻辑优化、审稿人偏好适配、Cover Letter 撰写——欢迎联系有译思翻译。</p>
+    <div class="contact-row">
+      <div class="contact-info">
+        <div>📧 邮箱：<a href="mailto:project@transyes.cn"><strong>project@transyes.cn</strong></a></div>
+        <div>💬 微信：<strong>Transyes_bj</strong></div>
+        <div style="margin-top:6px;font-size:12px;color:var(--t3)">扫码添加微信 →</div>
+      </div>
+      <img class="qr-img" src="有译思语言服务二维码.jpg" alt="有译思翻译微信二维码">
+    </div>
+    <div class="services">论文润色 · 投稿辅助 · 学术翻译 · 写作培训</div>
+  </div>
+
+  <footer>
+    SCI WritingLab — 免费学术写作工具 | 由有译思翻译（Transyes）出品<br>
+    工具基于 AI 生成，结果仅供参考，请以期刊官方要求为准
+  </footer>
+</main>
+
+<script>
+// ═══════════════════════════════════════
+// API 配置
+// ═══════════════════════════════════════
+const API_URL = "https://sci-writinglab.pages.dev/api/proxy";
+const API_MODEL = "deepseek-chat";
+
+// 保存最近一次匹配结果（用于"再推荐5个"）
+let matcherLatestData = null;
+let matcherLatestRaw = '';
+
+// ─── 动态加载提示（每 4 秒轮换，matcher 等待最久，最需要）───
+const LOADING_TIPS = [
+  '正在连接 AI 模型...',
+  '正在分析稿件关键词与方向...',
+  '正在检索期刊数据库...',
+  '正在评估匹配度与投稿策略...',
+  '即将完成，感谢耐心等待 ☕',
+];
+function startTipRotation(tipId) {
+  let i = 0;
+  const el = document.getElementById(tipId);
+  if (el) el.textContent = LOADING_TIPS[0];
+  return setInterval(function() {
+    i = (i + 1) % LOADING_TIPS.length;
+    const el2 = document.getElementById(tipId);
+    if (el2) el2.textContent = LOADING_TIPS[i];
+  }, 4000);
+}
+
+// ─── 流式 API 调用（stream:true，首 token 2-3s 内到达，避免非流式等待超时）───
+// matcher 输出是 JSON，不需要实时渲染，onChunk 传空函数即可，最终返回完整文本。
+async function callAPIStream(systemPrompt, userMessage) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: API_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage }
+      ],
+      temperature: 0.15,
+      max_tokens: 4096,
+      stream: true
+    })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error("API 错误 (" + res.status + "): " + err.substring(0, 150));
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '', full = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop();
+    for (const line of lines) {
+      const t = line.trim();
+      if (!t || t === 'data: [DONE]') continue;
+      if (!t.startsWith('data: ')) continue;
+      try {
+        const delta = JSON.parse(t.slice(6)).choices?.[0]?.delta?.content;
+        if (delta) full += delta;
+      } catch (_) {}
+    }
+  }
+  return full;
+}
+
+// ─── HTML 转义（防止 XSS）───
+function escapeHTML(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ─── 读取高级筛选条件，转为约束对象 ───
+function buildMatcherConstraints() {
+  // 读取各单选组的选中值
+  const casQ = document.querySelector('input[name="casQ"]:checked');
+  const jcrQ = document.querySelector('input[name="jcrQ"]:checked');
+  const ifMin = document.querySelector('input[name="ifMin"]:checked');
+  const oa = document.querySelector('input[name="oa"]:checked');
+  const apc = document.querySelector('input[name="apc"]:checked');
+  const review = document.querySelector('input[name="reviewCycle"]:checked');
+  const casText = (document.getElementById('mc-casText').value || '').trim();
+  const casTags = (document.getElementById('mc-casTags').value || '').trim();
+
+  // 将选中值映射为约束对象，未选（""）表示不启用该条件
+  return {
+    casCategoryText:      { enabled: !!casText,             mode: 'soft', weight: 0.7, value: casText },
+    casTags:              { enabled: !!casTags,             mode: 'soft', weight: 0.6, value: casTags },
+    casQuartile:          { enabled: !!(casQ && casQ.value), mode: 'soft', weight: 0.8, value: casQ ? casQ.value : '' },
+    jcrQuartile:          { enabled: !!(jcrQ && jcrQ.value), mode: 'soft', weight: 0.8, value: jcrQ ? jcrQ.value : '' },
+    impactFactor:         { enabled: !!(ifMin && ifMin.value), mode: 'soft', weight: 0.7, value: ifMin ? ifMin.value : '' },
+    oaPreference:         { enabled: !!(oa && oa.value),    mode: 'soft', weight: 0.6, value: oa ? oa.value : '' },
+    apcMaxUSD:            { enabled: !!(apc && apc.value),  mode: 'soft', weight: 0.6, value: apc ? apc.value : '' },
+    reviewCycleMonthsMax: { enabled: !!(review && review.value), mode: 'soft', weight: 0.6, value: review ? review.value : '' }
+  };
+}
+
+// ─── 组装发送给 API 的完整 payload ───
+function buildMatcherPayload(round, excludeJournalNames) {
+  return {
+    manuscript: {
+      title: (document.getElementById('matcher-title').value || '').trim(),
+      abstract: (document.getElementById('matcher-abstract').value || '').trim(),
+      keywords: (document.getElementById('matcher-keywords').value || '').trim()
+    },
+    // 自然语言选刊偏好直接透传给模型
+    customPreferenceText: (document.getElementById('matcher-natural').value || '').trim(),
+    constraints: buildMatcherConstraints(),
+    topK: 5,
+    round: round || 1,
+    excludeJournalNames: Array.isArray(excludeJournalNames) ? excludeJournalNames : []
+  };
+}
+
+// ─── 输入校验 ───
+function validateMatcherInput() {
+  const title = (document.getElementById('matcher-title').value || '').trim();
+  const abstract = (document.getElementById('matcher-abstract').value || '').trim();
+  const natural = (document.getElementById('matcher-natural').value || '').trim();
+
+  if (!title) return { ok: false, message: '⚠ 请填写论文标题 Title（不能为空）' };
+
+  const abstractLen = abstract.replace(/\s+/g, ' ').trim().length;
+  if (abstractLen < 80) {
+    return { ok: false, message: '⚠ Abstract 过短：请至少补充到约 80 个字符（建议包含研究背景、方法、主要结果与结论）' };
+  }
+
+  // 自然语言或至少一项高级筛选条件，二选一即可
+  const constraints = buildMatcherConstraints();
+  const anyEnabled = Object.values(constraints).some(c => c.enabled);
+  if (!natural && !anyEnabled) {
+    return { ok: false, message: '⚠ 请填写「选刊偏好」，或在高级设置中选择至少一项筛选条件' };
+  }
+
+  return { ok: true, message: '' };
+}
+
+// ─── 安全解析模型返回的 JSON ───
+function safeParseMatcherJson(raw) {
+  const text = String(raw || '').trim();
+  if (!text) throw new Error('空响应');
+  try { return JSON.parse(text); } catch (_) {}
+  // 模型可能包裹在 ```json ... ```
+  const fenced = text.match(/```json\s*([\s\S]*?)\s*```/i);
+  if (fenced && fenced[1]) return JSON.parse(fenced[1].trim());
+  // 兜底：提取第一个完整 JSON 对象
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start >= 0 && end > start) return JSON.parse(text.slice(start, end + 1));
+  throw new Error('未识别到有效 JSON，请重试');
+}
+
+// ─── 校验模型返回是否符合协议 ───
+function validateMatcherResponse(data) {
+  if (!data || typeof data !== 'object') return { ok: false, message: '响应不是有效对象' };
+  if (!Array.isArray(data.recommendations) || data.recommendations.length !== 5) {
+    return { ok: false, message: '协议异常：recommendations 必须为 5 条，请重试' };
+  }
+  const required = ['casMajorCategory','casMinorCategory','casQuartile','jcrQuartile',
+    'impactFactor','oaPolicy','apcInfo','reviewCycleEstimate','dataConfidence','verifyFlags'];
+  for (let i = 0; i < data.recommendations.length; i++) {
+    const item = data.recommendations[i];
+    if (!item || typeof item !== 'object') return { ok: false, message: `第 ${i+1} 条格式错误` };
+    if (!item.journalName) return { ok: false, message: `第 ${i+1} 条缺少 journalName` };
+    if (!Array.isArray(item.rationale) || !item.rationale.length) return { ok: false, message: `第 ${i+1} 条缺少 rationale` };
+    if (!Array.isArray(item.submissionStrategy) || !item.submissionStrategy.length) return { ok: false, message: `第 ${i+1} 条缺少 submissionStrategy` };
+    if (!Array.isArray(item.risks) || !item.risks.length) return { ok: false, message: `第 ${i+1} 条缺少 risks` };
+    if (!item.metrics || typeof item.metrics !== 'object') return { ok: false, message: `第 ${i+1} 条缺少 metrics` };
+    for (const k of required) {
+      if (!(k in item.metrics)) return { ok: false, message: `第 ${i+1} 条 metrics 缺少 ${k}` };
+    }
+  }
+  return { ok: true, message: '' };
+}
+
+// ─── 渲染"需自查"标记 ───
+function renderVerifyFlags(flags) {
+  if (!Array.isArray(flags) || !flags.length) return '';
+  return '<div class="verify-flags">⚠ 需自查：' + flags.map(f => escapeHTML(String(f))).join('；') + '</div>';
+}
+
+// ─── 渲染 Top5 摘要表格 ───
+function renderSummaryTable(data) {
+  const rows = data.recommendations.map((item, idx) => {
+    const m = item.metrics || {};
+    return '<tr>'
+      + '<td>' + (idx + 1) + '</td>'
+      + '<td><strong>' + escapeHTML(item.journalName || '-') + '</strong></td>'
+      + '<td>' + escapeHTML(String(item.fitScore ?? '-')) + '</td>'
+      + '<td>' + escapeHTML(m.casMajorCategory || '-') + '</td>'
+      + '<td>' + escapeHTML(m.casQuartile || '-') + '</td>'
+      + '<td>' + escapeHTML(m.jcrQuartile || '-') + '</td>'
+      + '<td>' + escapeHTML(m.impactFactor || '-') + '</td>'
+      + '<td>' + escapeHTML(m.oaPolicy || '-') + '</td>'
+      + '<td>' + escapeHTML(m.reviewCycleEstimate || '-') + '</td>'
+      + '</tr>';
+  }).join('');
+  return '<h3 style="margin-top:18px">Top 5 摘要</h3>'
+    + '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-family:sans-serif;font-size:12px">'
+    + '<thead><tr style="background:var(--bg2)"><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">#</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">期刊</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">匹配度</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">CAS 大类</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">CAS 区</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">JCR 区</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">IF</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">OA</th><th style="padding:7px 10px;text-align:left;border-bottom:2px solid var(--bd)">审稿周期</th></tr></thead>'
+    + '<tbody>' + rows + '</tbody></table></div>';
+}
+
+// ─── 渲染单个期刊卡片 ───
+function renderJournalCard(item, idx) {
+  const m = item.metrics || {};
+  const rationale = (item.rationale || []).map(x => '<li>' + escapeHTML(String(x)) + '</li>').join('');
+  const strategy = (item.submissionStrategy || []).map(x => '<li>' + escapeHTML(String(x)) + '</li>').join('');
+  const risks = (item.risks || []).map(x => '<li>' + escapeHTML(String(x)) + '</li>').join('');
+
+  // 指标标签
+  const metrics = [
+    m.casMajorCategory && ('CAS: ' + m.casMajorCategory),
+    m.casQuartile && ('CAS ' + m.casQuartile),
+    m.jcrQuartile && ('JCR ' + m.jcrQuartile),
+    m.impactFactor && ('IF ' + m.impactFactor),
+    m.oaPolicy && m.oaPolicy,
+    m.reviewCycleEstimate && ('审稿 ' + m.reviewCycleEstimate),
+  ].filter(Boolean);
+
+  const metricTags = metrics.map(t => '<span class="metric-tag">' + escapeHTML(t) + '</span>').join('');
+
+  return '<div class="journal-card">'
+    + '<div class="journal-card-header">'
+    + '<span class="journal-name">' + (idx + 1) + '. ' + escapeHTML(item.journalName || '-') + '</span>'
+    + '<div style="display:flex;gap:6px;align-items:center">'
+    + '<span class="fit-badge">匹配度 ' + escapeHTML(String(item.fitScore ?? '-')) + '</span>'
+    + '<button class="btn-sm" onclick="copyCard(' + idx + ')">复制</button>'
+    + '</div>'
+    + '</div>'
+    + (Array.isArray(m.verifyFlags) && m.verifyFlags.length ? renderVerifyFlags(m.verifyFlags) : '')
+    + '<div class="journal-metrics">' + metricTags + '</div>'
+    + '<details class="card-detail"><summary>查看推荐理由 / 投稿策略 / 风险提示</summary>'
+    + '<div style="margin-top:10px"><strong style="font-family:sans-serif;font-size:13px">推荐理由</strong><ul style="margin:4px 0 10px 18px;font-size:13px;font-family:sans-serif;color:var(--t2)">' + rationale + '</ul></div>'
+    + '<div><strong style="font-family:sans-serif;font-size:13px">投稿策略</strong><ul style="margin:4px 0 10px 18px;font-size:13px;font-family:sans-serif;color:var(--t2)">' + strategy + '</ul></div>'
+    + '<div><strong style="font-family:sans-serif;font-size:13px">风险提示</strong><ul style="margin:4px 0 0 18px;font-size:13px;font-family:sans-serif;color:var(--t2)">' + risks + '</ul></div>'
+    + '</details>'
+    + '</div>';
+}
+
+// ─── 复制单张卡片内容为纯文本 ───
+async function copyCard(idx) {
+  if (!matcherLatestData || !Array.isArray(matcherLatestData.recommendations)) return;
+  const item = matcherLatestData.recommendations[idx];
+  if (!item) return;
+  const m = item.metrics || {};
+  const lines = [
+    (idx + 1) + '. ' + (item.journalName || ''),
+    '匹配度：' + String(item.fitScore ?? '-'),
+    'CAS：' + (m.casMajorCategory || '-') + ' / ' + (m.casMinorCategory || '-') + ' / ' + (m.casQuartile || '-'),
+    'JCR：' + (m.jcrQuartile || '-'),
+    'IF：' + (m.impactFactor || '-'),
+    'OA/APC：' + (m.oaPolicy || '-') + ' / ' + (m.apcInfo || '-'),
+    '审稿周期：' + (m.reviewCycleEstimate || '-'),
+    '',
+    '推荐理由：',
+    ...(item.rationale || []).map(x => '  · ' + x),
+    '',
+    '投稿策略：',
+    ...(item.submissionStrategy || []).map(x => '  · ' + x),
+    '',
+    '风险提示：',
+    ...(item.risks || []).map(x => '  · ' + x),
+  ];
+  const text = lines.join('\n');
+  try { await navigator.clipboard.writeText(text); } catch (_) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
+
+// ─── 错误提示展示 ───
+function renderFallback(errorMsg) {
+  return '<div class="err">⚠ ' + escapeHTML(errorMsg) + '</div>';
+}
+
+// ─── 期刊匹配系统提示词 ───
+const MATCHER_PROMPT = `你是SCI期刊选刊顾问。请严格根据用户给定稿件信息与约束，推荐5个期刊并输出JSON。
+硬性要求：
+1) 仅输出 JSON（不要 markdown、不要解释文字）
+2) recommendations 必须恰好 5 条
+3) fitScore 表示匹配度，不代表录用概率
+4) 如涉及接受率/录用率，须注明为公开估算数据，建议投稿前自查，不代表真实录用概率
+5) 不确定信息必须写入 verifyFlags，并在字段中标注需自查
+6) metrics 必须包含：
+casMajorCategory, casMinorCategory, casQuartile, jcrQuartile, impactFactor, oaPolicy, apcInfo, reviewCycleEstimate, dataConfidence, verifyFlags
+7) 严格控制输出长度：rationale/submissionStrategy/risks 每项数组最多 3 条，每条不超过 25 个英文词或 15 个汉字；verifyFlags 最多 2 条；summary 和 globalDisclaimer 各不超过 50 词
+
+输出结构：
+{
+  "summary": "string",
+  "recommendations": [{
+    "journalName": "string",
+    "fitScore": 0,
+    "rationale": ["string"],
+    "metrics": {
+      "casMajorCategory": "string",
+      "casMinorCategory": "string",
+      "casQuartile": "string",
+      "jcrQuartile": "string",
+      "impactFactor": "string",
+      "oaPolicy": "string",
+      "apcInfo": "string",
+      "reviewCycleEstimate": "string",
+      "dataConfidence": "high|medium|low",
+      "verifyFlags": ["string"]
+    },
+    "submissionStrategy": ["string"],
+    "risks": ["string"]
+  }],
+  "globalDisclaimer": "string"
+}`;
+
+// ─── 执行匹配 ───
+async function runMatcher(round) {
+  const error = document.getElementById('matcher-error');
+  const loading = document.getElementById('matcher-loading');
+  const result = document.getElementById('matcher-result');
+  const btn = document.getElementById('btn-matcher');
+  error.innerHTML = '';
+
+  // 输入校验
+  const v = validateMatcherInput();
+  if (!v.ok) {
+    error.innerHTML = '<div class="err">' + v.message + '</div>';
+    return;
+  }
+
+  // 排除上一轮已推荐的期刊
+  const prev = matcherLatestData && Array.isArray(matcherLatestData.recommendations)
+    ? matcherLatestData.recommendations.map(x => x && x.journalName).filter(Boolean)
+    : [];
+  const payload = buildMatcherPayload(round || 1, prev);
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  result.innerHTML = '';
+
+  const tipTimer = startTipRotation('matcher-tip');  // 启动动态提示轮播
+
+  try {
+    const raw = await callAPIStream(MATCHER_PROMPT, JSON.stringify(payload));
+    matcherLatestRaw = raw;
+    const parsed = safeParseMatcherJson(raw);
+    const vr = validateMatcherResponse(parsed);
+    if (!vr.ok) {
+      result.innerHTML = renderFallback(vr.message + '，请重试。');
+      return;
+    }
+    matcherLatestData = parsed;
+    const isRound2 = (round || 1) > 1;
+
+    // 渲染完整结果
+    result.innerHTML = ''
+      + '<div class="result">'
+      + '<h3 style="color:var(--h)">✅ 推荐完成' + (isRound2 ? '（二轮备选）' : '（首轮）') + '</h3>'
+      + '<p style="font-family:sans-serif;font-size:13px;color:var(--t2);margin-top:4px">' + escapeHTML(parsed.summary || '已生成 5 个候选期刊。') + '</p>'
+      + renderSummaryTable(parsed)
+      + '</div>'
+      + parsed.recommendations.map((item, idx) => renderJournalCard(item, idx)).join('')
+      + '<div class="row" style="margin-top:16px">'
+      + '<button class="btn-sm" type="button" onclick="runMatcher(2)">基于当前 Top5，再推荐 5 个备选期刊</button>'
+      + '</div>'
+      + (parsed.globalDisclaimer ? '<p style="font-size:12px;color:var(--t3);font-family:sans-serif;margin-top:8px">' + escapeHTML(parsed.globalDisclaimer) + '</p>' : '')
+      + '<p style="font-size:11px;color:var(--t3);font-family:sans-serif;margin-top:6px;border-top:1px solid var(--bd);padding-top:8px">📌 如结果中涉及录用率/接受率，均来源于公开网络资料，为估算数据，不代表真实录用概率，投稿前请以期刊官网或编辑部最新公告为准。</p>';
+  } catch (e) {
+    error.innerHTML = '<div class="err">⚠ ' + escapeHTML(e.message || '请求失败，请重试') + '</div>';
+  } finally {
+    clearInterval(tipTimer);
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+// ─── 清空所有输入 ───
+function resetMatcher() {
+  matcherLatestData = null;
+  matcherLatestRaw = '';
+  ['matcher-title','matcher-abstract','matcher-keywords','matcher-natural','mc-casText','mc-casTags'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  // 重置所有单选恢复"不限"
+  ['casQ','jcrQ','ifMin','oa','apc','reviewCycle'].forEach(name => {
+    const first = document.querySelector('input[name="' + name + '"][value=""]');
+    if (first) first.checked = true;
+  });
+  document.getElementById('matcher-error').innerHTML = '';
+  document.getElementById('matcher-result').innerHTML = '';
+}
+</script>
+</body>
+</html>

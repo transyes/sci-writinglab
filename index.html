@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCI WritingLab — 学术论文写作工具 | 有译思翻译</title>
+<meta name="description" content="免费SCI论文投稿规范清单、语言预审、期刊匹配工具，由有译思翻译Transyes出品">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700;800&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#faf9f7;--bg2:#f3f1ed;--fg:#1a1a1a;--t2:#555;--t3:#888;--bd:#e5e2dc;--a:#b45309;--a2:#d97706;--h:#78350f;--card:#fff}
+body{min-height:100vh;background:var(--bg);color:var(--fg);font-family:'Source Serif 4','Noto Serif SC',Georgia,serif;line-height:1.7}
+header{border-bottom:1px solid var(--bd);padding:14px 24px;background:var(--card)}
+.hdr-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:22px;font-weight:800;color:var(--h);letter-spacing:-1px;text-decoration:none}
+.logo small{font-size:11px;color:var(--t3);font-family:sans-serif;font-weight:400;margin-left:8px}
+nav{display:flex;gap:4px}
+.nav-btn{display:inline-block;background:transparent;border:1px solid transparent;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;color:var(--t2);font-family:sans-serif;text-decoration:none;transition:all .15s}
+.nav-btn:hover{color:var(--h)}
+.nav-btn.active{background:var(--bg2);border-color:var(--bd);color:var(--h);font-weight:700}
+main{max-width:900px;margin:0 auto;padding:40px 20px 24px}
+h1{font-size:32px;font-weight:800;color:var(--h);margin-bottom:10px;letter-spacing:-1px;text-align:center}
+.subtitle{font-size:15px;color:var(--t2);max-width:480px;margin:0 auto 40px;line-height:1.7;text-align:center;font-family:sans-serif}
+/* 工具卡片网格 */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px}
+.tool-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:28px 22px;text-decoration:none;transition:all .2s;display:block}
+.tool-card:hover{border-color:var(--a);transform:translateY(-2px);box-shadow:0 4px 16px rgba(180,83,9,.08)}
+.tool-card .icon{font-size:32px;margin-bottom:12px}
+.tool-card h3{margin:0 0 8px;font-size:16px;font-weight:700;color:var(--h)}
+.tool-card p{font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.6;margin-bottom:14px}
+.tool-card .arrow{font-size:13px;color:var(--a);font-weight:600;font-family:sans-serif}
+/* 联系入口 */
+.cta-box{padding:26px 32px;background:var(--bg2);border-radius:14px;max-width:700px;margin:0 auto}
+.cta-box h3{margin:0 0 8px;font-family:sans-serif;font-size:16px;color:var(--h)}
+.cta-box p{font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.7;margin-bottom:14px}
+.contact-row{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.contact-info{font-family:sans-serif;font-size:13px;color:var(--fg)}
+.contact-info div{margin-bottom:7px}
+.contact-info a{color:var(--a);text-decoration:none;font-weight:600}
+.contact-info a:hover{text-decoration:underline}
+.qr-img{width:96px;height:96px;border-radius:10px;border:1px solid var(--bd);object-fit:cover}
+.services{margin-top:12px;font-size:12px;color:var(--t3);font-family:sans-serif}
+footer{margin-top:44px;padding:22px 0;border-top:1px solid var(--bd);text-align:center;font-size:12px;color:var(--t3);font-family:sans-serif;line-height:1.8}
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .hdr-inner{flex-direction:column;align-items:flex-start}
+  h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="hdr-inner">
+  <a class="logo" href="index.html">SCI WritingLab<small>by Transyes</small></a>
+  <nav>
+    <a class="nav-btn active" href="index.html">首页</a>
+    <a class="nav-btn" href="checklist.html">📋 投稿清单</a>
+    <a class="nav-btn" href="prereview.html">📊 语言预审</a>
+    <a class="nav-btn" href="matcher.html">🧭 期刊匹配</a>
+  </nav>
+</div>
+</header>
+
+<main>
+  <h1>SCI 论文写作工具站</h1>
+  <p class="subtitle">三款免费工具，帮你在投稿前完成自查与选刊。由有译思翻译（Transyes）出品。</p>
+
+  <div class="cards">
+    <a class="tool-card" href="matcher.html">
+      <div class="icon">🧭</div>
+      <h3>期刊匹配</h3>
+      <p>输入研究方向与稿件关键信息，快速获得候选期刊匹配建议及投稿策略。</p>
+      <span class="arrow">开始使用 →</span>
+    </a>
+    <a class="tool-card" href="checklist.html">
+      <div class="icon">📋</div>
+      <h3>投稿规范 Checklist</h3>
+      <p>输入目标期刊名称，生成完整的投稿规范清单与投稿前自查表。</p>
+      <span class="arrow">开始使用 →</span>
+    </a>
+    <a class="tool-card" href="prereview.html">
+      <div class="icon">📊</div>
+      <h3>SCI 语言预审</h3>
+      <p>粘贴论文段落，获得时态、语态、用词、逻辑、格式五维度评分报告。</p>
+      <span class="arrow">开始使用 →</span>
+    </a>
+  </div>
+
+  <!-- 有译思联系入口 -->
+  <div class="cta-box">
+    <h3>需要专业 SCI 论文润色服务？</h3>
+    <p>以上工具提供 AI 语言层面的快速预审。如需资深学术编辑的专业 SCI 论文润色——包括逻辑优化、审稿人偏好适配、Cover Letter 撰写——欢迎联系有译思翻译。</p>
+    <div class="contact-row">
+      <div class="contact-info">
+        <div>📧 邮箱：<a href="mailto:project@transyes.cn">project@transyes.cn</a></div>
+        <div>💬 微信：<strong>Transyes_bj</strong></div>
+        <div style="margin-top:6px;font-size:12px;color:var(--t3)">扫右侧二维码添加微信 →</div>
+      </div>
+      <img class="qr-img" src="有译思语言服务二维码.jpg" alt="有译思翻译微信二维码">
+    </div>
+    <div class="services">论文润色 · 投稿辅助 · 学术翻译 · 写作培训</div>
+  </div>
+
+  <footer>
+    SCI WritingLab — 免费学术写作工具 | 由有译思翻译（Transyes）出品<br>
+    工具基于 AI 生成，结果仅供参考，请以期刊官方要求为准
+  </footer>
+</main>
+
+</body>
+</html>
