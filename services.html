@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学术翻译与润色服务 | 有译思 Transyes</title>
+<meta name="description" content="有译思翻译——北外翻译硕士创立，深耕学术语言服务14年，提供SCI论文母语润色、学术翻译、Cover Letter撰写等专业服务。">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700;800&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#faf9f7;--bg2:#f3f1ed;--fg:#1a1a1a;--t2:#555;--t3:#888;--bd:#e5e2dc;--a:#b45309;--a2:#d97706;--h:#78350f;--card:#fff}
+body{min-height:100vh;background:var(--bg);color:var(--fg);font-family:'Source Serif 4','Noto Serif SC',Georgia,serif;line-height:1.7}
+header{border-bottom:1px solid var(--bd);padding:14px 24px;background:var(--card)}
+.hdr-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:22px;font-weight:800;color:var(--h);letter-spacing:-1px;text-decoration:none}
+.logo small{font-size:11px;color:var(--t3);font-family:sans-serif;font-weight:400;margin-left:8px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav-btn{display:inline-block;background:transparent;border:1px solid transparent;border-radius:6px;padding:7px 14px;font-size:13px;cursor:pointer;color:var(--t2);font-family:sans-serif;text-decoration:none;transition:all .15s}
+.nav-btn:hover{color:var(--h)}
+.nav-btn.active{background:var(--bg2);border-color:var(--bd);color:var(--h);font-weight:700}
+main{max-width:900px;margin:0 auto;padding:40px 20px 60px}
+
+/* 顶部 Hero */
+.hero{text-align:center;padding:36px 0 40px;border-bottom:1px solid var(--bd);margin-bottom:48px}
+.hero h1{font-size:30px;font-weight:800;color:var(--h);letter-spacing:-0.5px;margin-bottom:8px}
+.hero .sub{font-size:14px;color:var(--t2);font-family:sans-serif;margin-bottom:28px}
+.stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .num{font-size:32px;font-weight:800;color:var(--a);letter-spacing:-1px;font-family:'Source Serif 4',Georgia,serif}
+.stat .label{font-size:12px;color:var(--t3);font-family:sans-serif;margin-top:2px}
+
+/* 区块通用 */
+.section{margin-bottom:52px}
+.section-title{display:flex;align-items:baseline;gap:10px;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--bd)}
+.section-num{font-size:11px;font-weight:700;color:var(--a);font-family:sans-serif;letter-spacing:1px;background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:2px 7px}
+.section-title h2{font-size:19px;font-weight:800;color:var(--h)}
+
+/* 服务卡片 */
+.service-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.service-card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:20px 22px}
+.service-card.full{grid-column:1/-1}
+.service-card .tag{display:inline-block;font-size:11px;font-family:sans-serif;font-weight:700;color:var(--a);background:#fef3c7;border:1px solid #fde68a;border-radius:4px;padding:2px 8px;margin-bottom:10px}
+.service-card h3{font-size:15px;font-weight:700;color:var(--h);margin-bottom:6px}
+.service-card p{font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.65}
+.service-card .detail{font-size:12px;color:var(--t3);font-family:sans-serif;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)}
+.addon-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.addon-tag{font-size:12px;font-family:sans-serif;color:var(--t2);background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:3px 10px}
+.subject-bar{margin-top:14px;padding:10px 14px;background:var(--bg2);border-radius:6px;font-size:12px;font-family:sans-serif;color:var(--t3)}
+.subject-bar span{color:var(--t2);font-weight:600}
+
+/* 流程 */
+.steps{display:flex;gap:0;counter-reset:step}
+.step{flex:1;position:relative;padding:18px 16px 16px;background:var(--card);border:1px solid var(--bd);border-radius:8px;margin-right:10px}
+.step:last-child{margin-right:0}
+.step::before{content:counter(step);counter-increment:step;display:block;width:24px;height:24px;background:var(--a);color:#fff;border-radius:50%;font-size:12px;font-weight:700;font-family:sans-serif;line-height:24px;text-align:center;margin-bottom:10px}
+.step h4{font-size:13px;font-weight:700;color:var(--h);margin-bottom:4px;font-family:sans-serif}
+.step p{font-size:12px;color:var(--t3);font-family:sans-serif;line-height:1.55}
+.step-note{margin-top:14px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;font-size:12px;font-family:sans-serif;color:#92400e}
+
+/* 价格表 */
+.price-table{width:100%;border-collapse:collapse;font-family:sans-serif;font-size:13px}
+.price-table th{text-align:left;padding:10px 14px;background:var(--bg2);color:var(--t2);font-size:12px;font-weight:700;border-bottom:2px solid var(--bd)}
+.price-table td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--fg);vertical-align:top}
+.price-table tr:last-child td{border-bottom:none}
+.price-table .price{font-weight:700;color:var(--a)}
+.price-note{margin-top:10px;font-size:12px;font-family:sans-serif;color:var(--t3);line-height:1.6}
+
+/* 核心问题 */
+.expertise-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.expertise-item{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:18px 20px}
+.expertise-item .icon{font-size:20px;margin-bottom:8px}
+.expertise-item h4{font-size:14px;font-weight:700;color:var(--h);margin-bottom:6px}
+.expertise-item p{font-size:12.5px;color:var(--t2);font-family:sans-serif;line-height:1.65}
+
+/* 为什么选我们 */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.why-item{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:18px;text-align:center}
+.why-item .big{font-size:28px;font-weight:800;color:var(--a);font-family:'Source Serif 4',Georgia,serif;letter-spacing:-1px}
+.why-item .why-label{font-size:12px;color:var(--t3);font-family:sans-serif;margin-top:3px}
+.bg-badge{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px 18px;font-size:13px;font-family:sans-serif;color:var(--t2);margin-bottom:14px}
+.bg-badge strong{color:var(--h)}
+.institutions{display:flex;flex-wrap:wrap;gap:8px}
+.inst-tag{font-size:12px;font-family:sans-serif;color:var(--t2);background:var(--bg2);border:1px solid var(--bd);border-radius:4px;padding:3px 10px}
+
+/* 联系 CTA */
+.contact-cta{background:linear-gradient(135deg,#78350f 0%,#b45309 100%);border-radius:14px;padding:32px 36px;color:#fff;text-align:center}
+.contact-cta h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
+.contact-cta p{font-size:13px;color:rgba(255,255,255,.8);font-family:sans-serif;margin-bottom:24px}
+.contact-row{display:flex;justify-content:center;align-items:center;gap:32px;flex-wrap:wrap}
+.contact-item{display:flex;align-items:center;gap:8px;font-family:sans-serif;font-size:14px;color:#fff}
+.contact-item a{color:#fde68a;text-decoration:none;font-weight:700}
+.contact-item a:hover{text-decoration:underline}
+.qr-img{width:88px;height:88px;border-radius:8px;border:2px solid rgba(255,255,255,.3)}
+.cta-note{margin-top:16px;font-size:12px;color:rgba(255,255,255,.6);font-family:sans-serif}
+
+footer{margin-top:48px;padding:22px 0;border-top:1px solid var(--bd);text-align:center;font-size:12px;color:var(--t3);font-family:sans-serif;line-height:1.8}
+
+@media(max-width:640px){
+  .service-grid,.expertise-grid,.why-grid{grid-template-columns:1fr}
+  .service-card.full{grid-column:auto}
+  .steps{flex-direction:column}
+  .step{margin-right:0;margin-bottom:10px}
+  .stats{gap:24px}
+  .contact-cta{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="hdr-inner">
+  <a class="logo" href="index.html">SCI WritingLab<small>by Transyes</small></a>
+  <nav>
+    <a class="nav-btn" href="index.html">首页</a>
+    <a class="nav-btn" href="checklist.html">📋 投稿清单</a>
+    <a class="nav-btn" href="prereview.html">📊 语言预审</a>
+    <a class="nav-btn" href="matcher.html">🧭 期刊匹配</a>
+    <a class="nav-btn active" href="services.html">✦ 专业服务</a>
+  </nav>
+</div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>有译思 Transyes · 学术翻译与润色</h1>
+    <p class="sub">北京外国语大学翻译硕士创立 · 专注学术语言服务</p>
+    <div class="stats">
+      <div class="stat"><div class="num">14<span style="font-size:18px">年</span></div><div class="label">学术语言服务经验</div></div>
+      <div class="stat"><div class="num">500<span style="font-size:18px">+</span></div><div class="label">签约专业译员与编辑</div></div>
+      <div class="stat"><div class="num">500<span style="font-size:18px">+</span></div><div class="label">机构长期合作方</div></div>
+      <div class="stat"><div class="num">30<span style="font-size:18px">+</span></div><div class="label">覆盖语种</div></div>
+    </div>
+  </div>
+
+  <!-- 01 服务内容 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">01</span>
+      <h2>服务内容</h2>
+    </div>
+
+    <div class="service-grid">
+
+      <div class="service-card">
+        <div class="tag">我有中文稿</div>
+        <h3>母语级学术翻译（中译英）</h3>
+        <p>领域译员翻译 + 学科专家审校 + 母语编辑润色，三方协作。</p>
+        <div class="detail">适用于 SCI/EI 投稿及国内期刊英文长摘要</div>
+      </div>
+
+      <div class="service-card">
+        <div class="tag">我有中文稿</div>
+        <h3>专业级翻译（中译英）</h3>
+        <p>专业译员翻译 + 润色，高效交付。</p>
+        <div class="detail">适合国内期刊长摘要，可加急处理</div>
+      </div>
+
+      <div class="service-card">
+        <div class="tag">我有英文稿</div>
+        <h3>深度母语润色</h3>
+        <p>语言与逻辑全面优化——不只改单句，也梳理段落层次与信息排布。</p>
+        <div class="detail">适合英文初稿已完成、需提升结构与整体可读性的稿件</div>
+      </div>
+
+      <div class="service-card">
+        <div class="tag">我有英文稿</div>
+        <h3>基础母语润色</h3>
+        <p>语法校对 + 句式优化 + 术语规范化。</p>
+        <div class="detail">适合英文基础较好、主要需要语言层面整理的稿件</div>
+      </div>
+
+      <div class="service-card">
+        <div class="tag">会议投稿</div>
+        <h3>国际学术会议配套</h3>
+        <p>会议摘要翻译与润色 · Poster 语言支持 · 口头报告规范 · 汇报演讲培训</p>
+      </div>
+
+      <div class="service-card">
+        <div class="tag">单项支持</div>
+        <h3>附加支持服务</h3>
+        <div class="addon-list">
+          <span class="addon-tag">摘要专项优化</span>
+          <span class="addon-tag">Cover Letter 撰写</span>
+          <span class="addon-tag">审稿意见回复</span>
+          <span class="addon-tag">期刊格式排版</span>
+          <span class="addon-tag">语言编辑证明</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="subject-bar">
+      <span>覆盖学科：</span>医学与生命科学 · 计算机/AI · 材料与能源 · 工程 · 人文社科 · 经济商学 等
+    </div>
+  </div>
+
+  <!-- 02 服务流程 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">02</span>
+      <h2>服务流程</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h4>提交稿件</h4>
+        <p>发送文件与需求说明至邮件或微信，全程保密</p>
+      </div>
+      <div class="step">
+        <h4>签订保密协议</h4>
+        <p>正式启动前签订 NDA，确保未公开数据安全</p>
+      </div>
+      <div class="step">
+        <h4>免费评估方案</h4>
+        <p>学术顾问评估稿件，提供报价与交付时间</p>
+      </div>
+      <div class="step">
+        <h4>专家处理</h4>
+        <p>领域译员/编辑处理，母语专家终审</p>
+      </div>
+      <div class="step">
+        <h4>交付与修改</h4>
+        <p>交付成稿 + 修改说明，支持必要调整</p>
+      </div>
+    </div>
+    <div class="step-note">⏱ 学术顾问通常在 <strong>2 小时内</strong>提供免费评估与报价</div>
+  </div>
+
+  <!-- 03 参考价格 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">03</span>
+      <h2>参考价格</h2>
+    </div>
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>服务类型</th>
+          <th>参考价格</th>
+          <th>交付周期</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>母语级翻译</strong>（中译英）</td>
+          <td><span class="price">0.6 元/中文字起</span></td>
+          <td>5–10 工作日</td>
+          <td>三方协作翻审润色，可加急</td>
+        </tr>
+        <tr>
+          <td><strong>专业级翻译</strong>（中译英）</td>
+          <td><span class="price">0.4 元/字起</span></td>
+          <td>2–4 工作日</td>
+          <td>专业译员翻译+润色，可加急</td>
+        </tr>
+        <tr>
+          <td><strong>深度母语润色</strong></td>
+          <td><span class="price">0.6 元/词起</span></td>
+          <td>3–7 工作日</td>
+          <td>逻辑+结构+语言多重把关</td>
+        </tr>
+        <tr>
+          <td><strong>基础母语润色</strong></td>
+          <td><span class="price">0.3 元/词起</span></td>
+          <td>2–5 工作日</td>
+          <td>重点修改语法+术语规范</td>
+        </tr>
+        <tr>
+          <td><strong>会议摘要翻译/润色</strong></td>
+          <td><span class="price">100 元/篇起</span></td>
+          <td>—</td>
+          <td>500字以内摘要，可提供 Poster 支持</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="price-note">* 以上为参考区间，实际报价依稿件字数、学科复杂度与交付周期确定。正式报价以学术顾问评估后提供为准。</p>
+  </div>
+
+  <!-- 04 核心问题 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">04</span>
+      <h2>我们处理的四类核心问题</h2>
+    </div>
+    <div class="expertise-grid">
+      <div class="expertise-item">
+        <div class="icon">🔬</div>
+        <h4>学科语境理解</h4>
+        <p>确保术语体系符合学科国际表达规范，而非字面直译。</p>
+      </div>
+      <div class="expertise-item">
+        <div class="icon">📐</div>
+        <h4>表达与结构复核</h4>
+        <p>梳理句式与段落逻辑，使研究问题、方法与结论的论证关系更清晰。不只改单句，也调整段落层次与信息排布。</p>
+      </div>
+      <div class="expertise-item">
+        <div class="icon">🔤</div>
+        <h4>术语统一</h4>
+        <p>统一全文核心术语，避免同义混用导致逻辑模糊，提升审稿人阅读体验。</p>
+      </div>
+      <div class="expertise-item">
+        <div class="icon">📋</div>
+        <h4>投稿规范核查</h4>
+        <p>缩写首次出现全称展开、引用格式匹配目标期刊、图表规范、文稿结构系统检查。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 为什么选有译思 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">05</span>
+      <h2>为什么选有译思</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="big">14年</div>
+        <div class="why-label">学术语言服务经验</div>
+      </div>
+      <div class="why-item">
+        <div class="big">500+</div>
+        <div class="why-label">签约专业译员</div>
+      </div>
+      <div class="why-item">
+        <div class="big">30名</div>
+        <div class="why-label">高校教师及外籍专家</div>
+      </div>
+    </div>
+    <div class="bg-badge">
+      🎓 <strong>北外背景：</strong>北京外国语大学创业中心重点企业，由北外翻译硕士自主创立运营，2011 年至今。
+    </div>
+    <p style="font-size:13px;color:var(--t2);font-family:sans-serif;margin-bottom:10px">部分长期合作机构：</p>
+    <div class="institutions">
+      <span class="inst-tag">清华大学</span>
+      <span class="inst-tag">北京大学</span>
+      <span class="inst-tag">香港中文大学</span>
+      <span class="inst-tag">复旦大学</span>
+      <span class="inst-tag">北京航空航天大学</span>
+      <span class="inst-tag">中国人民银行</span>
+      <span class="inst-tag">教育部</span>
+      <span class="inst-tag">中国美术馆</span>
+      <span class="inst-tag">UNDP</span>
+      <span class="inst-tag">纽约时报</span>
+      <span class="inst-tag">500+ 机构</span>
+    </div>
+  </div>
+
+  <!-- 06 联系方式 -->
+  <div class="contact-cta">
+    <h2>免费评估，2 小时内回复</h2>
+    <p>发送稿件至邮箱或微信，学术顾问为你提供免费评估与报价</p>
+    <div class="contact-row">
+      <div>
+        <div class="contact-item" style="margin-bottom:10px">📧 <a href="mailto:project@transyes.cn">project@transyes.cn</a></div>
+        <div class="contact-item">📱 <span style="color:#fde68a;font-weight:700">15608217316</span></div>
+        <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.6);font-family:sans-serif">微信同号 · Transyes_bj</div>
+      </div>
+      <div style="text-align:center">
+        <img class="qr-img" src="有译思语言服务二维码.jpg" alt="有译思翻译微信二维码">
+        <div style="margin-top:6px;font-size:11px;color:rgba(255,255,255,.5);font-family:sans-serif">扫码添加微信</div>
+      </div>
+    </div>
+    <div class="cta-note">论文润色 · 学术翻译 · 投稿辅助 · Cover Letter · 写作培训</div>
+  </div>
+
+  <footer>
+    有译思翻译（Transyes）· 学术语言服务 | <a href="index.html" style="color:var(--a);text-decoration:none">返回 SCI WritingLab</a><br>
+    北京外国语大学创业中心重点企业 · 2011 年至今
+  </footer>
+
+</main>
+</body>
+</html>
