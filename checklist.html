@@ -50,6 +50,11 @@ input[type=text]:focus{border-color:var(--a)}
 .loading{text-align:center;padding:32px;color:var(--t3);font-family:sans-serif;font-size:14px}
 .spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--bd);border-top-color:var(--a);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ── 动态场景 CTA（Linear light 风格）── */
+.dynamic-cta{margin:10px 0 14px;padding:12px 16px;background:#eef0fc;border:1px solid rgba(94,106,210,.22);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dynamic-cta-text{font-family:sans-serif;font-size:13px;color:#2b2d3a;line-height:1.55;flex:1;min-width:180px}
+.dynamic-cta-btn{display:inline-block;padding:7px 15px;background:#5e6ad2;color:#fff;border-radius:6px;font-size:12.5px;font-weight:600;font-family:sans-serif;text-decoration:none;white-space:nowrap;transition:background .15s;border:none;cursor:pointer;flex-shrink:0}
+.dynamic-cta-btn:hover{background:#4f5bbf}
 /* 联系入口 */
 .cta-box{margin-top:44px;padding:22px 28px;background:var(--bg2);border-radius:12px;max-width:680px;margin-left:auto;margin-right:auto}
 .cta-box h3{margin:0 0 8px;font-family:sans-serif;font-size:15px;color:var(--h)}
@@ -220,7 +225,16 @@ async function callAPIStream(systemPrompt, userMessage, onChunk) {
 // ─── Markdown 简易渲染器 ───
 function renderMD(text) {
   let html = text
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^### (.+)$/gm, function(_, title) {
+      // Cover Letter 章节下方插入动态 CTA（无需额外 API 调用，纯客户端判断）
+      const cta = title.trim() === 'Cover Letter 要点'
+        ? '<div class="dynamic-cta">'
+          + '<div class="dynamic-cta-text">不知道怎么写打动主编的 Cover Letter？</div>'
+          + '<a class="dynamic-cta-btn" href="services.html">点击获取有译思人工撰写服务 →</a>'
+          + '</div>'
+        : '';
+      return '<h3>' + title + '</h3>' + cta;
+    })
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--h)">$1</strong>')
     .replace(/^- \[ \] (.+)$/gm, '<div style="display:flex;gap:8px;margin:2px 0"><span style="opacity:.4">☐</span><span>$1</span></div>')
