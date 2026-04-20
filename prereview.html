@@ -340,8 +340,9 @@ function renderMD(text) {
 // ─── Value Gate：显示前5条，门控后续内容 ───
 // 完全客户端，零 API 调用；localStorage 记录解锁状态（已解锁不重复加门）
 function applyValueGate(container) {
-  // 已解锁：直接展示全部，不加门
+  // 已解锁：直接展示全部，不加门，顺便显示下载区
   if (localStorage.getItem('pv_unlocked') === '1') {
+    document.getElementById('download-section').style.display = 'block';
     return countIssues(container);
   }
 
@@ -353,48 +354,57 @@ function applyValueGate(container) {
   });
   if (!issuesTable) return 0;
 
-  const dataRows = Array.from(issuesTable.querySelectorAll('tr')).slice(1);
+  const allRows = Array.from(issuesTable.querySelectorAll('tr'));
+  const dataRows = allRows.slice(1);  // 排除表头行
   const total = dataRows.length;
   if (total === 0) return 0;
 
-  // 隐藏第6条起的问题行
+  // ① 隐藏第6条起的问题行
   const hiddenCount = Math.max(0, total - 5);
   dataRows.forEach(function(row, i) { if (i >= 5) row.style.display = 'none'; });
 
-  // 在表格末尾追加"还有X条"提示行
+  // ② 在表格末尾追加提示行（告知用户还有内容）
+  const cols = allRows[0].querySelectorAll('th,td').length || 5;
+  const hintRow = document.createElement('tr');
+  hintRow.className = 'more-issues-row';
+  hintRow.id = 'gate-hint-row';
   if (hiddenCount > 0) {
-    const hintRow = document.createElement('tr');
-    hintRow.className = 'more-issues-row';
-    hintRow.id = 'gate-hint-row';
-    const cols = issuesTable.querySelector('tr').querySelectorAll('th,td').length;
-    hintRow.innerHTML = '<td colspan="' + cols + '">已展示前 5 条 · 还有 <strong>' + hiddenCount + '</strong> 条详细修改建议，解锁后查看</td>';
-    (issuesTable.querySelector('tbody') || issuesTable).appendChild(hintRow);
+    hintRow.innerHTML = '<td colspan="' + cols + '">已展示前 5 条 · 还有 <strong>' + hiddenCount + '</strong> 条修改建议，解锁后查看完整版</td>';
+  } else {
+    hintRow.innerHTML = '<td colspan="' + cols + '">解锁后查看语言亮点与整体润色建议</td>';
   }
+  (issuesTable.querySelector('tbody') || issuesTable).appendChild(hintRow);
 
-  // 隐藏问题表之后的所有兄弟节点（✅亮点 + 💡整体建议 等）
+  // ③ 隐藏问题表之后的所有兄弟元素（✅亮点 + 💡整体建议 + hr + 尾注）
   let cur = issuesTable.nextSibling;
   while (cur) {
-    if (cur.nodeType === 1) cur.setAttribute('data-gated', '1');
-    if (cur.nodeType === 1) cur.style.display = 'none';
-    cur = cur.nextSibling;
+    const next = cur.nextSibling;  // 先保存，防止移动节点后丢失
+    if (cur.nodeType === 1) {
+      cur.setAttribute('data-gated', '1');
+      cur.style.display = 'none';
+    }
+    cur = next;
   }
 
-  // 插入模糊预览条（制造"还有内容"的视觉暗示）
+  // ④ 构建 gate 容器（peek + 解锁面板），用 parentNode.insertBefore 插入
+  //    避免 insertAdjacentElement 在 <table> 后可能被浏览器吞入表格的问题
+  const gateWrap = document.createElement('div');
+  gateWrap.id = 'gate-wrap';
+
   const peek = document.createElement('div');
   peek.className = 'gate-peek';
-  peek.id = 'gate-peek';
-  peek.innerHTML = '✅ 语言亮点点评 &nbsp;·&nbsp; 💡 整体润色方向 &nbsp;·&nbsp; 剩余 ' + hiddenCount + ' 条修改建议…';
-  issuesTable.insertAdjacentElement('afterend', peek);
+  const moreText = hiddenCount > 0 ? '剩余 ' + hiddenCount + ' 条修改建议 &nbsp;·&nbsp; ' : '';
+  peek.innerHTML = moreText + '✅ 语言亮点 &nbsp;·&nbsp; 💡 整体润色方向';
+  gateWrap.appendChild(peek);
 
-  // 插入解锁面板
   const unlockDiv = document.createElement('div');
   unlockDiv.className = 'gate-unlock';
   unlockDiv.id = 'gate-unlock';
   unlockDiv.innerHTML =
     '<p class="gate-unlock-title">🔒 完整评估报告已生成</p>'
     + '<p class="gate-unlock-desc">免费解锁全部 <strong>' + total + ' 条</strong>修改建议、语言亮点与整体润色方向<br>'
-    + '填写飞书表单（约 30 秒），在提交成功页面获取解锁码</p>'
-    + '<div style="margin-bottom:4px">'
+    + '填写飞书表单（约 30 秒），成功页面获取解锁码，回来输入即可</p>'
+    + '<div style="margin-bottom:12px">'
     + '<a class="gate-btn-form" href="https://transyes.feishu.cn/share/base/form/shrcnDQwfqOpi79y9arvCEQ6pPc" target="_blank" rel="noopener">填写表单获取解锁码 →</a>'
     + '</div>'
     + '<div class="gate-input-row">'
@@ -402,22 +412,25 @@ function applyValueGate(container) {
     + '<button onclick="doUnlock()">解锁</button>'
     + '</div>'
     + '<p class="gate-err" id="gate-err" style="display:none">解锁码不正确，请重试</p>';
-  peek.insertAdjacentElement('afterend', unlockDiv);
+  gateWrap.appendChild(unlockDiv);
+
+  // 将 gateWrap 插入到 issuesTable 的下一个兄弟之前（即紧接在表格后面）
+  issuesTable.parentNode.insertBefore(gateWrap, issuesTable.nextSibling);
 
   return total;
 }
 
-// ─── 解锁：移除门控，恢复隐藏内容 ───
+// ─── 解锁：移除门控，恢复隐藏内容，显示下载区 ───
 function doUnlock() {
   const input = document.getElementById('gate-pwd');
   const pwd = (input ? input.value.trim() : '').toLowerCase();
   if (pwd === 'youyisi26') {
     localStorage.setItem('pv_unlocked', '1');
-    // 移除门控 UI
-    ['gate-peek', 'gate-unlock', 'gate-hint-row'].forEach(function(id) {
-      const el = document.getElementById(id);
-      if (el) el.remove();
-    });
+    // 移除整个 gate 容器
+    const wrap = document.getElementById('gate-wrap');
+    if (wrap) wrap.remove();
+    const hint = document.getElementById('gate-hint-row');
+    if (hint) hint.remove();
     // 恢复隐藏的表格行
     const rc = document.getElementById('result-content');
     if (rc) {
@@ -428,6 +441,8 @@ function doUnlock() {
         el.removeAttribute('data-gated');
       });
     }
+    // 解锁后才显示下载区
+    document.getElementById('download-section').style.display = 'block';
   } else {
     const err = document.getElementById('gate-err');
     if (err) err.style.display = 'block';
@@ -558,10 +573,8 @@ async function runPrereview() {
     resultContent.insertBefore(warningEl, resultContent.firstChild);
 
     // 策略一：门控后续内容（前5条免费，后续+亮点+建议解锁）
-    const issueCount = applyValueGate(resultContent);
-    if (issueCount > 0) {
-      document.getElementById('download-section').style.display = 'block';
-    }
+    // download-section 由 applyValueGate 决定：已解锁时直接显示，未解锁时由 doUnlock 控制
+    applyValueGate(resultContent);
   } catch (e) {
     error.innerHTML = '<div class="err">⚠ ' + e.message + '</div>';
   }
