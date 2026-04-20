@@ -143,7 +143,7 @@ footer{margin-top:44px;padding:22px 0;border-top:1px solid var(--bd);text-align:
       <p style="font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.7;margin-bottom:14px">
         如果这份预审对你有帮助，欢迎认识一下有译思——我们是一支专注学术语言的团队，不定期分享 SCI 写作资源，也可以聊聊你的投稿计划。完全自愿，没有推销。
       </p>
-      <a href="https://transyes.feishu.cn/share/base/form/shrcnxBxO903MJBtn56nDtKU7cc"
+      <a href="https://transyes.feishu.cn/share/base/form/shrcnDQwfqOpi79y9arvCEQ6pPc"
          target="_blank"
          style="display:inline-block;padding:8px 20px;background:var(--a);color:#fff;border-radius:6px;font-size:13px;font-weight:600;font-family:sans-serif;text-decoration:none;transition:background .15s"
          onmouseover="this.style.background='var(--a2)'"
@@ -338,10 +338,10 @@ function renderMD(text) {
 }
 
 // ─── Value Gate：显示前5条，门控后续内容 ───
-// 完全客户端，零 API 调用；localStorage 记录解锁状态（已解锁不重复加门）
+// 完全客户端，零 API 调用；sessionStorage 记录本次会话解锁状态（关闭标签页后重置）
 function applyValueGate(container) {
-  // 已解锁：直接展示全部，不加门，顺便显示下载区
-  if (localStorage.getItem('pv_unlocked') === '1') {
+  // 已解锁（本次会话）：直接展示全部，不加门，顺便显示下载区
+  if (sessionStorage.getItem('pv_unlocked') === '1') {
     document.getElementById('download-section').style.display = 'block';
     return countIssues(container);
   }
@@ -425,7 +425,7 @@ function doUnlock() {
   const input = document.getElementById('gate-pwd');
   const pwd = (input ? input.value.trim() : '').toLowerCase();
   if (pwd === 'youyisi26') {
-    localStorage.setItem('pv_unlocked', '1');
+    sessionStorage.setItem('pv_unlocked', '1');
     // 移除整个 gate 容器
     const wrap = document.getElementById('gate-wrap');
     if (wrap) wrap.remove();
@@ -768,9 +768,15 @@ function buildPrintHTML() {
 </html>`;
 }
 
-// ─── 点击下载：直接打开打印窗口，成功后显示邀请卡 ───
+// ─── 点击下载：需已解锁才能打开打印窗口 ───
 function downloadReport() {
   if (!fullReportHTML) return;
+  // 安全门控：未解锁时阻止下载（即使 download-section 意外可见）
+  if (sessionStorage.getItem('pv_unlocked') !== '1') {
+    const gateUnlock = document.getElementById('gate-unlock');
+    if (gateUnlock) gateUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
 
   const printWin = window.open('', '_blank');
   if (printWin) {
