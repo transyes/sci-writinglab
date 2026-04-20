@@ -555,11 +555,16 @@ function renderJournalCard(item, idx) {
   const strategy = (item.submissionStrategy || []).map(x => '<li>' + escapeHTML(String(x)) + '</li>').join('');
   const risks = (item.risks || []).map(x => '<li>' + escapeHTML(String(x)) + '</li>').join('');
 
-  // 动态 CTA：IF ≥ 10 或 CAS Q1 期刊，提示语言要求极高
-  // casQuartile 可能为英文 "Q1" 或中文 "一区"，两种格式都要处理
+  // 动态 CTA 触发判断：两路信号取 OR
+  // 路径①：用户意图——设置了 IF ≥ 8 或 CAS Q1，说明用户在冲顶刊，整批推荐都值得提示
+  const userIfMin = parseFloat(document.querySelector('input[name="ifMin"]:checked')?.value || '0') || 0;
+  const userCasQ  = document.querySelector('input[name="casQ"]:checked')?.value  || '';
+  const userTargetsHighTier = userIfMin >= 8 || userCasQ === 'Q1';
+  // 路径②：期刊数据——IF ≥ 10 或 CAS Q1/一区（兼容中英文）
   const ifVal = parseFloat(String(m.impactFactor || '0').replace(/[^0-9.]/g, '')) || 0;
-  const qStr = String(m.casQuartile || '').toUpperCase();
-  const isHighTier = ifVal >= 10 || qStr.includes('Q1') || qStr.includes('一区');
+  const qStr  = String(m.casQuartile || '').toUpperCase();
+  const journalIsHighTier = ifVal >= 10 || qStr.includes('Q1') || qStr.includes('一区');
+  const isHighTier = userTargetsHighTier || journalIsHighTier;
   const highTierCta = isHighTier
     ? '<div class="dynamic-cta">'
       + '<div class="dynamic-cta-text"><strong>⚡ 注意：该期刊对语言逻辑要求极高。</strong> '

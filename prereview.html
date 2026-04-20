@@ -60,6 +60,22 @@ input[type=text]:focus,input[type=email]:focus{border-color:var(--a)}
 .check-label input[type=checkbox]{width:15px;height:15px;accent-color:var(--a);cursor:pointer}
 .dl-footer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .dl-note{font-size:12px;color:var(--t3);font-family:sans-serif}
+/* ── AI 边界警告横幅 ── */
+.ai-warning{padding:12px 18px;background:#fff7ed;border:1px solid #fdba74;border-left:4px solid #ea580c;border-radius:0 6px 6px 0;font-family:sans-serif;font-size:13px;color:#7c2d12;line-height:1.65;margin-bottom:14px}
+.ai-warning strong{color:#c2410c}
+/* ── Value Gate：报告截留 ── */
+.gate-peek{padding:10px 14px;background:var(--bg2);border-radius:6px;margin:8px 0 0;filter:blur(3px);pointer-events:none;user-select:none;font-size:13px;color:var(--t2);font-family:sans-serif;line-height:1.6}
+.gate-unlock{margin-top:0;padding:20px 24px;background:var(--card);border:1px solid var(--bd);border-top:3px solid var(--a);border-radius:0 0 8px 8px;text-align:center}
+.gate-unlock-title{font-family:sans-serif;font-size:15px;font-weight:700;color:var(--h);margin-bottom:8px}
+.gate-unlock-desc{font-family:sans-serif;font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:16px}
+.gate-btn-form{display:inline-block;padding:9px 22px;background:var(--a);color:#fff;border-radius:6px;font-size:13px;font-weight:600;font-family:sans-serif;text-decoration:none;transition:background .15s}
+.gate-btn-form:hover{background:var(--a2)}
+.gate-input-row{display:flex;gap:8px;max-width:300px;margin:12px auto 0}
+.gate-input-row input{flex:1;padding:9px 14px;border:1px solid var(--bd);border-radius:6px;font-size:13px;font-family:sans-serif;outline:none;color:var(--fg);background:var(--card)}
+.gate-input-row input:focus{border-color:var(--a)}
+.gate-input-row button{padding:9px 16px;background:var(--h);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;font-family:sans-serif;cursor:pointer;transition:background .15s;white-space:nowrap}
+.gate-input-row button:hover{background:var(--a)}
+.gate-err{font-family:sans-serif;font-size:12px;color:#dc2626;margin-top:8px}
 /* 错误与加载 */
 .err{padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b;font-size:13px;margin:10px 0;font-family:sans-serif}
 .ok-msg{padding:10px 14px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;color:#166534;font-size:13px;margin:10px 0;font-family:sans-serif}
@@ -321,32 +337,114 @@ function renderMD(text) {
   return html;
 }
 
-// ─── 截断问题明细表，只显示前 10 条 ───
-function truncateIssuesTable(container) {
-  let totalIssues = 0;
-  container.querySelectorAll('table').forEach(function(table) {
-    const header = table.querySelector('tr');
-    if (!header) return;
-    // 识别含"原文"和"维度"列的问题明细表
-    if (!header.textContent.includes('原文') || !header.textContent.includes('维度')) return;
+// ─── Value Gate：显示前5条，门控后续内容 ───
+// 完全客户端，零 API 调用；localStorage 记录解锁状态（已解锁不重复加门）
+function applyValueGate(container) {
+  // 已解锁：直接展示全部，不加门
+  if (localStorage.getItem('pv_unlocked') === '1') {
+    return countIssues(container);
+  }
 
-    const dataRows = Array.from(table.querySelectorAll('tr')).slice(1);
-    totalIssues = dataRows.length;
+  // 找问题明细表（含"原文"+"维度"表头）
+  let issuesTable = null;
+  container.querySelectorAll('table').forEach(function(t) {
+    const h = t.querySelector('tr');
+    if (h && h.textContent.includes('原文') && h.textContent.includes('维度')) issuesTable = t;
+  });
+  if (!issuesTable) return 0;
 
-    if (totalIssues > 10) {
-      dataRows.forEach(function(row, idx) {
-        if (idx >= 10) row.style.display = 'none';
+  const dataRows = Array.from(issuesTable.querySelectorAll('tr')).slice(1);
+  const total = dataRows.length;
+  if (total === 0) return 0;
+
+  // 隐藏第6条起的问题行
+  const hiddenCount = Math.max(0, total - 5);
+  dataRows.forEach(function(row, i) { if (i >= 5) row.style.display = 'none'; });
+
+  // 在表格末尾追加"还有X条"提示行
+  if (hiddenCount > 0) {
+    const hintRow = document.createElement('tr');
+    hintRow.className = 'more-issues-row';
+    hintRow.id = 'gate-hint-row';
+    const cols = issuesTable.querySelector('tr').querySelectorAll('th,td').length;
+    hintRow.innerHTML = '<td colspan="' + cols + '">已展示前 5 条 · 还有 <strong>' + hiddenCount + '</strong> 条详细修改建议，解锁后查看</td>';
+    (issuesTable.querySelector('tbody') || issuesTable).appendChild(hintRow);
+  }
+
+  // 隐藏问题表之后的所有兄弟节点（✅亮点 + 💡整体建议 等）
+  let cur = issuesTable.nextSibling;
+  while (cur) {
+    if (cur.nodeType === 1) cur.setAttribute('data-gated', '1');
+    if (cur.nodeType === 1) cur.style.display = 'none';
+    cur = cur.nextSibling;
+  }
+
+  // 插入模糊预览条（制造"还有内容"的视觉暗示）
+  const peek = document.createElement('div');
+  peek.className = 'gate-peek';
+  peek.id = 'gate-peek';
+  peek.innerHTML = '✅ 语言亮点点评 &nbsp;·&nbsp; 💡 整体润色方向 &nbsp;·&nbsp; 剩余 ' + hiddenCount + ' 条修改建议…';
+  issuesTable.insertAdjacentElement('afterend', peek);
+
+  // 插入解锁面板
+  const unlockDiv = document.createElement('div');
+  unlockDiv.className = 'gate-unlock';
+  unlockDiv.id = 'gate-unlock';
+  unlockDiv.innerHTML =
+    '<p class="gate-unlock-title">🔒 完整评估报告已生成</p>'
+    + '<p class="gate-unlock-desc">免费解锁全部 <strong>' + total + ' 条</strong>修改建议、语言亮点与整体润色方向<br>'
+    + '填写飞书表单（约 30 秒），在提交成功页面获取解锁码</p>'
+    + '<div style="margin-bottom:4px">'
+    + '<a class="gate-btn-form" href="https://transyes.feishu.cn/share/base/form/shrcnDQwfqOpi79y9arvCEQ6pPc" target="_blank" rel="noopener">填写表单获取解锁码 →</a>'
+    + '</div>'
+    + '<div class="gate-input-row">'
+    + '<input type="text" id="gate-pwd" placeholder="输入解锁码…" autocomplete="off" onkeydown="if(event.key===\'Enter\')doUnlock()">'
+    + '<button onclick="doUnlock()">解锁</button>'
+    + '</div>'
+    + '<p class="gate-err" id="gate-err" style="display:none">解锁码不正确，请重试</p>';
+  peek.insertAdjacentElement('afterend', unlockDiv);
+
+  return total;
+}
+
+// ─── 解锁：移除门控，恢复隐藏内容 ───
+function doUnlock() {
+  const input = document.getElementById('gate-pwd');
+  const pwd = (input ? input.value.trim() : '').toLowerCase();
+  if (pwd === 'youyisi26') {
+    localStorage.setItem('pv_unlocked', '1');
+    // 移除门控 UI
+    ['gate-peek', 'gate-unlock', 'gate-hint-row'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+    // 恢复隐藏的表格行
+    const rc = document.getElementById('result-content');
+    if (rc) {
+      rc.querySelectorAll('table tr').forEach(function(row) { row.style.display = ''; });
+      // 恢复隐藏的亮点/整体建议等节点
+      rc.querySelectorAll('[data-gated="1"]').forEach(function(el) {
+        el.style.display = '';
+        el.removeAttribute('data-gated');
       });
-      // 追加提示行
-      const moreRow = document.createElement('tr');
-      moreRow.className = 'more-issues-row';
-      const cols = header.querySelectorAll('th,td').length;
-      moreRow.innerHTML = '<td colspan="' + cols + '">已展示前 10 条 · 还有 '
-        + (totalIssues - 10) + ' 条问题明细，下载完整报告查看</td>';
-      (table.querySelector('tbody') || table).appendChild(moreRow);
+    }
+  } else {
+    const err = document.getElementById('gate-err');
+    if (err) err.style.display = 'block';
+    if (input) { input.focus(); input.select(); }
+  }
+}
+
+// ─── 仅统计问题条数（已解锁时使用）───
+function countIssues(container) {
+  let count = 0;
+  container.querySelectorAll('table').forEach(function(t) {
+    const h = t.querySelector('tr');
+    if (h && h.textContent.includes('原文') && h.textContent.includes('维度')) {
+      count = Array.from(t.querySelectorAll('tr')).slice(1).length;
     }
   });
-  return totalIssues;
+  return count;
 }
 
 // ─── 语言预审系统提示词 ───
@@ -445,11 +543,22 @@ async function runPrereview() {
       }
     );
 
-    // 流式完成后：重新渲染（含 id），执行问题截断与下载区域逻辑
-    fullReportHTML = renderMD(accumulated);  // 存完整内容供 PDF 下载
+    // 流式完成后：重新渲染（含 id），加警告横幅，执行门控逻辑
+    fullReportHTML = renderMD(accumulated);  // 存完整内容供 PDF 下载（始终完整）
     submittedText = text;
     result.innerHTML = '<div class="result" id="result-content">' + fullReportHTML + '</div>';
-    const issueCount = truncateIssuesTable(document.getElementById('result-content'));
+
+    // 策略二：在报告顶部插入 AI 边界警告（静态 HTML，不依赖 AI 输出）
+    const resultContent = document.getElementById('result-content');
+    const warningEl = document.createElement('div');
+    warningEl.className = 'ai-warning';
+    warningEl.innerHTML = '⚠️ <strong>预审警示：</strong>本报告仅代表 AI 在词汇与语法表层的判断。'
+      + 'SCI 拒稿的本质往往是「研究逻辑链断裂」与「不符合审稿人圈子偏好」，'
+      + '这些深层问题需要具有同行评审经验的学术编辑人工把关。';
+    resultContent.insertBefore(warningEl, resultContent.firstChild);
+
+    // 策略一：门控后续内容（前5条免费，后续+亮点+建议解锁）
+    const issueCount = applyValueGate(resultContent);
     if (issueCount > 0) {
       document.getElementById('download-section').style.display = 'block';
     }
